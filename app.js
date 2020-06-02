@@ -1,6 +1,7 @@
 const axios = require('axios');
 const cors = require('cors');
 const express = require('express');
+const db = require('./config/database');
 
 const app = express();
 
@@ -24,4 +25,17 @@ app.get('/search', (req, res) => {
   });
 });
 
-app.listen(process.env.PORT || 3000);
+app.post('/auth/login', (req, res) => {
+  res.json();
+});
+
+app.use('/users', require('./routes/users'));
+
+db.authenticate()
+  .then(() => {
+    console.log('Database connected...');
+    app.listen(process.env.PORT || 3000);
+  })
+  .catch((err) => console.log(`Error:' + ${err} `));
+
+// USERS ROUTES

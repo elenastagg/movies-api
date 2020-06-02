@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon -r dotenv/config app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "db:start": "docker-compose up -d",
+    "db:stop": "docker stop $(docker ps -aqf \"name=movies-api\")"
   },
   "keywords": [],
   "author": "Elena Stagg",
@@ -17,7 +18,10 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "mysql": "^2.18.1",
-    "react": "^16.13.1"
+    "mysql2": "^1.7.0",
+    "react": "^16.13.1",
+    "sequelize": "^5.21.11",
+    "sequelize-cli": "^5.5.1"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
