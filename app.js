@@ -8,15 +8,11 @@ const app = express();
 
 app.use(cors());
 
-//Express to recognize the incoming Request Object as a JSON Object
+// Express to recognize the incoming Request Object as a JSON Object
 app.use(express.json());
 
 app.use('/users', userRoute);
 app.use('/movies', moviesRoute);
-
-// app.post('/auth/login', (req, res) => {
-//   res.json();
-// });
 
 // Test DB
 db.authenticate()

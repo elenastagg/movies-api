@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user-model');
 
+// Find all users
 module.exports.list = (req, res) => {
   User.findAll()
     .then((users) => {
@@ -9,6 +11,7 @@ module.exports.list = (req, res) => {
     .catch((err) => res.status(500).json({ error: err.message }));
 };
 
+// Check for existing user and create new user if it does not exist
 module.exports.create = async (req, res) => {
   const hash = bcrypt.hashSync(req.body.password, 10);
   try {
@@ -30,4 +33,33 @@ module.exports.create = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+// Check for user and log in
+module.exports.find = async (req, res) => {
+  const user = await User.findOne({
+    where: { email: req.body.email },
+  }).then((selectedUser) => {
+    if (selectedUser === null) {
+      res.status(401).json({ Message: 'Auth failed' });
+    } else {
+      bcrypt.compare(req.body.password, selectedUser.password, (err, result) => {
+        if (result) {
+          const token = jwt.sign(
+            {
+              email: selectedUser.email,
+              id: selectedUser.id,
+            },
+            process.env.ACCESS_TOKEN_SECRET,
+            {
+              expiresIn: '1h',
+            },
+          );
+          res.status(200).json({ Message: 'Auth successful', token });
+        } else {
+          res.status(401).json({ Message: 'Auth failed' });
+        }
+      });
+    }
+  });
 };
