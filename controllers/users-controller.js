@@ -26,9 +26,9 @@ module.exports.create = async (req, res) => {
       },
     });
     if (created) {
-      res.status(201).json(user);
+      res.status(201).json({ message: 'auth successful' });
     } else {
-      res.status(422).json({ message: 'email already exists' });
+      res.status(400).json({ message: 'email already exists' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -41,7 +41,7 @@ module.exports.find = async (req, res) => {
     where: { email: req.body.email },
   }).then((selectedUser) => {
     if (selectedUser === null) {
-      res.status(401).json({ Message: 'Auth failed' });
+      res.status(401).json({ message: 'Auth failed' });
     } else {
       bcrypt.compare(req.body.password, selectedUser.password, (err, result) => {
         if (result) {
@@ -55,11 +55,25 @@ module.exports.find = async (req, res) => {
               expiresIn: '1h',
             },
           );
-          res.status(200).json({ Message: 'Auth successful', token });
+          res.status(200).json({ message: 'Auth successful', token });
         } else {
-          res.status(401).json({ Message: 'Auth failed' });
+          res.status(401).json({ message: 'Auth failed' });
         }
       });
     }
   });
+};
+
+// Check for token and find profile
+module.exports.getUser = async (req, res) => {
+  const user = await User.findOne({
+    where: { id: req.params.id },
+  });
+
+  res
+    .json({
+      firstName: user.first_name,
+      lastName: user.last_name,
+    })
+    .catch((err) => res.status(500).json({ error: err.message }));
 };
