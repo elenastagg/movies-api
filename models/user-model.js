@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-
+const Favourite = require('./favourite-model');
 const db = require('../config/database');
 
 const User = db.define(
@@ -25,7 +25,10 @@ const User = db.define(
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
+    underscored: true,
   },
 );
+
+User.hasMany(Favourite);
 
 module.exports = User;

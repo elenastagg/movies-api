@@ -52,7 +52,7 @@ module.exports.find = async (req, res) => {
             },
             process.env.ACCESS_TOKEN_SECRET,
             {
-              expiresIn: '1h',
+              expiresIn: '1w',
             },
           );
           res.status(200).json({ message: 'Auth successful', token });
@@ -68,12 +68,12 @@ module.exports.find = async (req, res) => {
 module.exports.getUser = async (req, res) => {
   const user = await User.findOne({
     where: { id: req.params.id },
-  });
-
-  res
-    .json({
-      firstName: user.first_name,
-      lastName: user.last_name,
+  })
+    .then(() => {
+      res.json({
+        firstName: user.first_name,
+        lastName: user.last_name,
+      });
     })
     .catch((err) => res.status(500).json({ error: err.message }));
 };
