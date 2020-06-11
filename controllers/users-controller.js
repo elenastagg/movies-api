@@ -69,10 +69,9 @@ module.exports.getUser = async (req, res) => {
   const user = await User.findOne({
     where: { id: req.params.id },
   })
-    .then(() => {
+    .then((selectedUser) => {
       res.json({
-        firstName: user.first_name,
-        lastName: user.last_name,
+        username: selectedUser.username,
       });
     })
     .catch((err) => res.status(500).json({ error: err.message }));
