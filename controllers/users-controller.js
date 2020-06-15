@@ -37,18 +37,21 @@ module.exports.create = async (req, res) => {
 
 // Check for user and log in
 module.exports.find = async (req, res) => {
-  const user = await User.findOne({
-    where: { email: req.body.email },
-  }).then((selectedUser) => {
-    if (selectedUser === null) {
+  try {
+    const user = await User.findOne({
+      where: { email: req.body.email },
+    });
+    if (user === null) {
       res.status(401).json({ message: 'Auth failed' });
     } else {
-      bcrypt.compare(req.body.password, selectedUser.password, (err, result) => {
+      bcrypt.compare(req.body.password, user.password, (err, result) => {
+        if (err) throw err;
+
         if (result) {
           const token = jwt.sign(
             {
-              email: selectedUser.email,
-              id: selectedUser.id,
+              email: user.email,
+              id: user.id,
             },
             process.env.ACCESS_TOKEN_SECRET,
             {
@@ -61,18 +64,22 @@ module.exports.find = async (req, res) => {
         }
       });
     }
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 // Check for token and find profile
 module.exports.getUser = async (req, res) => {
-  const user = await User.findOne({
-    where: { id: req.params.id },
-  })
-    .then((selectedUser) => {
-      res.json({
-        username: selectedUser.username,
-      });
-    })
-    .catch((err) => res.status(500).json({ error: err.message }));
+  try {
+    const user = await User.findOne({
+      where: { id: req.params.id },
+    });
+
+    res.json({
+      username: user.username,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };

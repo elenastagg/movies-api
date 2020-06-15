@@ -5,7 +5,6 @@ const router = express.Router();
 
 const FavouritesController = require('../controllers/favourites-controller');
 
-router.get('/', checkAuth, FavouritesController.list);
 router.post('/', checkAuth, FavouritesController.create);
 
 module.exports = router;
