@@ -1,27 +1,23 @@
-const axios = require('axios');
 const cors = require('cors');
 const express = require('express');
+const db = require('./config/database');
+const userRoute = require('./routes/users-routes');
+const moviesRoute = require('./routes/movies-routes');
 
 const app = express();
 
 app.use(cors());
 
-app.get('/search', (req, res) => {
-  Promise.all([
-    axios.get(
-      `https://api.themoviedb.org/3/search/movie?api_key=${process.env.API_KEY}&query=${req.query.query}`,
-    ),
-    axios.get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.API_KEY}`),
-  ]).then(([moviesResponse, genresResponse]) => {
-    const movies = moviesResponse.data.results.map(({ genre_ids, ...movie }) => ({
-      ...movie,
-      genres: genre_ids.map(
-        (genreId) => genresResponse.data.genres.find((genre) => genre.id === genreId).name,
-      ),
-    }));
+// Express to recognize the incoming Request Object as a JSON Object
+app.use(express.json());
 
-    res.json(movies);
-  });
-});
+app.use('/users', userRoute);
+app.use('/movies', moviesRoute);
 
-app.listen(process.env.PORT || 3000);
+// Test DB
+db.authenticate()
+  .then(() => {
+    console.log('Database connected...');
+    app.listen(process.env.PORT || 3000);
+  })
+  .catch((err) => console.log(`Error:' + ${err} `));
