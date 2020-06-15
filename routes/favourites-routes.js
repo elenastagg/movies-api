@@ -6,5 +6,7 @@ const router = express.Router();
 const FavouritesController = require('../controllers/favourites-controller');
 
 router.post('/', checkAuth, FavouritesController.create);
+router.get('/', checkAuth, FavouritesController.list);
+router.delete('/:movieId', checkAuth, FavouritesController.delete);
 
 module.exports = router;

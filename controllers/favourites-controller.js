@@ -21,6 +21,19 @@ module.exports.create = async (req, res) => {
   }
 };
 
+// // Delete favourite
+
+module.exports.delete = async (req, res) => {
+  try {
+    await Favourite.destroy({
+      where: { movie_id: req.params.movieId, user_id: req.userData.id },
+    });
+    return res.status(200).json('movie deleted');
+  } catch (error) {
+    res.sendStatus(500);
+  }
+};
+
 // Find all favourites
 module.exports.list = async (req, res) => {
   try {
