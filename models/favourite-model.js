@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const User = require('./user-model');
 
 const db = require('../config/database');
 
@@ -17,7 +16,5 @@ const Favourite = db.define(
     underscored: true,
   },
 );
-
-// Favourite.belongsTo(User);
 
 module.exports = Favourite;

@@ -27,11 +27,7 @@ module.exports.create = async (req, res) => {
 };
 
 // Check for user and log in
-<<<<<<< HEAD
-module.exports.find = async (req, res) => {
-=======
 module.exports.login = async (req, res) => {
->>>>>>> master
   try {
     const user = await User.findOne({
       where: { email: req.body.email },
@@ -40,11 +36,6 @@ module.exports.login = async (req, res) => {
       res.status(401).json({ message: 'Auth failed' });
     } else {
       bcrypt.compare(req.body.password, user.password, (err, result) => {
-<<<<<<< HEAD
-        if (err) throw err;
-
-=======
->>>>>>> master
         if (result) {
           const token = jwt.sign(
             {
@@ -75,12 +66,7 @@ module.exports.getUser = async (req, res) => {
     });
 
     res.json({
-<<<<<<< HEAD
       username: user.username,
-=======
-      firstName: user.first_name,
-      lastName: user.last_name,
->>>>>>> master
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
