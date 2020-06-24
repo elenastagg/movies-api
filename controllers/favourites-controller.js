@@ -5,17 +5,24 @@ const User = require('../models/user-model');
 // Create new favourite
 module.exports.create = async (req, res) => {
   try {
-    const [favourite, created] = await Favourite.findOrCreate({
-      where: { movie_id: req.body.movie_id, user_id: req.userData.id },
-      defaults: { movie_id: req.body.movie_id },
+    const count = await Favourite.count({
+      where: { user_id: req.userData.id },
     });
+    if (count >= 100) {
+      res.status(401).json('You cannot add more than 100 movies');
+    } else {
+      const [favourite, created] = await Favourite.findOrCreate({
+        where: { movie_id: req.body.movie_id, user_id: req.userData.id },
+        defaults: { movie_id: req.body.movie_id },
+      });
 
-    if (created) {
-      const user = await User.findByPk(req.userData.id);
-      await user.addFavourite(favourite);
+      if (created) {
+        const user = await User.findByPk(req.userData.id);
+        await user.addFavourite(favourite);
+      }
+
+      return res.sendStatus(201);
     }
-
-    return res.sendStatus(201);
   } catch (error) {
     res.sendStatus(500);
   }
