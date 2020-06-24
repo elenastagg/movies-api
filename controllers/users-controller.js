@@ -44,7 +44,7 @@ module.exports.login = async (req, res) => {
             },
             process.env.ACCESS_TOKEN_SECRET,
             {
-              expiresIn: '1h',
+              expiresIn: '1w',
             },
           );
           res.status(200).json({ message: 'Auth successful', token });
@@ -66,8 +66,7 @@ module.exports.getUser = async (req, res) => {
     });
 
     res.json({
-      firstName: user.first_name,
-      lastName: user.last_name,
+      username: user.username,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

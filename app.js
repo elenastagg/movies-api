@@ -3,6 +3,7 @@ const express = require('express');
 const db = require('./config/database');
 const userRoute = require('./routes/users-routes');
 const moviesRoute = require('./routes/movies-routes');
+const favouritesRoute = require('./routes/favourites-routes');
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use('/users', userRoute);
 app.use('/movies', moviesRoute);
+app.use('/favourites', favouritesRoute);
 
 // Test DB
 db.authenticate()
